@@ -1,0 +1,50 @@
+{% extends 'rapi/Layout.html' %}
+{% block principal %}
+
+    {% if atencion %}
+    <div class="col-md-4">
+
+        <h5>Tiempo de la Atencion: </h5>
+        <p id="p1">{{ atencion.TiempoA }}</p>
+        <h5>Estado de la Atencion: </h5>
+        {% if atencion.Estado %}
+        <p id="p2">ATENDIDO</p>
+        {% else %}
+        <p>NO ATENDIDO</p>
+        {% endif %}
+        <h5>Nro de Cama: </h5>
+        <p id="p3">{{ atencion.NroCamaA.Nro_Cama }}</p>
+        <h5>Paciente Atendido: </h5>
+        <p id="p4">{{ atencion.NroCamaA.Id_paciente.Nombre_P }}, {{ atencion.NroCamaA.Id_paciente.Apellido_P }}</p>
+        <h5>Area de Atencion: </h5>
+        <p id="p5">{{ atencion.NroCamaA.Area.Descripcion_Area }}</p>
+        <h5>Personal que atendio: </h5>
+        <p id="p6">{{ atencion.ID_P.NombreS }}, {{ atencion.ID_P.ApellidoS }} </p>
+        <h5>Usuario que registro atencion: </h5>
+        <p id="p7">{{ atencion.Nombre_U.first_name }}, {{ atencion.Nombre_U.last_name}} </p>
+        <h5>Total de veces editado: </h5>
+        <p id="p8">{{ atencion.NroEdiciones.TotalE }} </p>
+        <h5>Total de veces editado: </h5>
+        <p id="p9">{{ Totalediciones }} </p>
+        <h5>Usuarios que Editaron: </h5>
+        <div id="users-edit"></div>
+        {% for edicionU in EdicionesxUser %}
+        <p>{{ edicionU.idUsuarios.first_name }}, {{ edicionU.idUsuarios.last_name }}: {{ edicionU.TotalE }} Ediciones al registro</p>
+        {% endfor %}
+        <h5>Fue editado por ultima vez: </h5>
+        <p id="p11">{{ Last_Time }}</p>
+    </div>
+    <div class="col-md-4">
+        <h5>Descripcion:</h5>
+        <textarea rows="6">{{ atencion.DescripcionA }}</textarea>
+        <form method="post" action="{% url 'printinfo' %}" >
+        {% csrf_token %}
+        <center><input type="button" class="btn btn-default" align="middle" value="Imprimir Informacion" ></center>
+    </form>
+    </div>
+    {% else %}
+        <div class="col-md-4">
+        <h2>El numero de registro que ha ingresado, es incorrecto</h2>
+        </div>
+    {% endif %}
+{% endblock %}

@@ -1,0 +1,99 @@
+{% extends 'rapi/Layout.html' %}
+
+{% block principal %}
+<div class="col-md-8">
+<form method="post" action="">
+    {% csrf_token %}
+    <div class="row">
+        <div class="col-md-6">
+          <label for="sel1">Seleccione un Reporte</label>
+          <select class="form-control" id="sel1" name="sele1" onchange="cambiar_reporte(this)">
+            <option id="0" value="0">Seleccione una opcion</option>
+            <option id="1" value="1">Reporte del Dia</option>
+            <option id="2" value="2">Reporte Mensual</option>
+          </select>
+            <h3>Grafica de atenciones segun el reporte</h3>
+            <div id="cantidad"></div>
+        </div>
+        <br/>
+        <canvas id="grafica" width="300" height="300"></canvas>
+        <div class="col-md-4">
+
+        </div>
+    </div>
+    </form>
+    <form id="form1" method="post" action="{% url 'reportegen' %}" >
+        {% csrf_token %}
+        <input name="sele1" id="response" type="hidden">
+        <center><input type="button" class="btn btn-default" align="middle" value="DESCARGAR REPORTE" onclick="descargar_reporte(this)"></center>
+    </form>
+
+</div>
+
+{% endblock %}
+{% block js %}
+    <script>
+        var get_selections=0
+		function cambiar_reporte(sel){
+            get_selections = sel[sel.selectedIndex].id;
+            var atendidos = 0;
+            var noatendidos= 0;
+            $.ajax({
+                type : "POST",
+                data : {'seleccion':get_selections, csrfmiddlewaretoken: '{{ csrf_token }}'},
+                url  : "{% url 'reporteA' %}",
+                success: function(data_array){
+                    switch (get_selections) {
+                case "1":
+                    $('#cantidad').html("<h3>Se realizaron un total de: " + data_array.length +" atenciones en el dia </h3>");
+                    $('#response').val(get_selections);
+                    break;
+                case "2":
+                    $('#cantidad').html("<h3>Se realizaron un total de: " + data_array.length +" atenciones este mes</h3>");
+                    $('#response').val(get_selections);
+                    break;
+                default :
+                    $('#cantidad').html("<h3>Seleccione una opcion de reporte</h3>");
+                    break;
+                    }
+                    for(var i=0;i<data_array.length;i++)
+                    {
+                        if(data_array[i].fields.Estado==true) {
+                            atendidos++;
+                        }
+                        else
+                            noatendidos++;
+                    }
+                    var pieData = [
+                        {
+                            value: atendidos,
+                            color:"#F7464A",
+                            highlight: "#FF5A5E",
+                            label: "Atendido"
+                        },
+                        {
+                            value: noatendidos,
+                            color: "#46BFBD",
+                            highlight: "#5AD3D1",
+                            label: "No Atendido"
+                        }
+                    ];
+                    var ctx = document.getElementById("grafica").getContext("2d");
+				    window.myPie = new Chart(ctx).Pie(pieData);
+                }
+            });
+        }
+
+    function descargar_reporte(button)
+    {
+        var selection = get_selections;
+        if(get_selections == 0)
+        {
+            alert('seleccione una opcion para descargar el reporte')
+        }
+        else{
+            $('#form1').submit();
+        }
+    }
+	</script>
+{% endblock %}

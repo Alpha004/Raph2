@@ -1,0 +1,78 @@
+{% load i18n %}
+{% load static %}
+<!DOCTYPE html>
+<html>
+<head>
+    <title></title>
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" integrity="sha384-1q8mTJOASx8j1Au+a5WDVnPi2lkFfwwEAa8hDDdjZlpLegxhjVME1fgjWPGmkzs7" crossorigin="anonymous">
+    <link rel="stylesheet" type="text/css" href="{% static 'css/menu_styles.css'%}">
+    <link rel="stylesheet" href="http://cdn.datatables.net/1.10.2/css/jquery.dataTables.css">
+
+
+</head>
+<body>
+<div class="page-header">
+  <h1><a href="{% url 'index' %}" style="color: #004444">Registro de Atencion de Pacientes Hospitalizados</a><small><br/>R-A-P-H</small></h1>
+    {% if user.is_authenticated %}
+    <div class="col-md-9 col-md-push-9">Hola, {{ user.username }}, ahora tiene acceso al sistema</div>
+        <br/>
+    {% endif %}
+</div>
+<marquee width=100% direction=right bgcolor="#3498db" scrolldelay=100>
+    <h3>Recuerde verificar siempre las alertas</h3>
+  </marquee>
+<div class="col-md-2">
+    <nav class="navbar navbar-default" role="navigation">
+
+        <div class="navbar-header">
+            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+        </div>        
+        <form method="post">
+        <div class="collapse navbar-collapse">
+            <div class="panel-heading">Menu Principal</div>
+            <ul class="nav nav-stacked">
+                {% if user.is_superuser %}
+                    <li class="active"><center><a href="{% url 'alertas' %}"><h2 >Alertas</h2></a></center></li>
+                    <li><a href="{% url 'menupaciente' %}">Pacientes</a></li>
+                    <li><a href="{% url 'lista1' %}">Ver Lista de Atenciones</a></li>
+                    <li><a href="{% url 'raphadmin' %}">Administrador</a></li>
+                    <li><a href="{% url 'logout' %}" >Cerrar Sesion</a></li>
+                {% else %}
+                    <li class="active"><center><a href="{% url 'alertas' %}"><h2 >Alertas</h2></a></center></li>
+                    <li><a href="{% url 'menupaciente' %}">Pacientes</a></li>
+                    <li><a href="{% url 'lista1' %}">Ver Lista de Atenciones</a></li>
+                    <li><a href="{% url 'logout' %}" >Cerrar Sesion</a></li>
+                {% endif %}
+            </ul>
+
+
+        </div><!-- /.navbar-collapse -->
+        </form>
+    </nav>
+
+</div><!--/end left column-->
+
+{% block principal %}
+{% endblock %}
+
+<div class="container">
+
+    <script src="{% static 'js/jquery-9.js'%}"></script>
+    <script>window.jQuery || document.write('<script src="{{ STATIC_URL }}js/jquery.min.js"></ script>')</script>
+    <script type="text/javascript" src="http://cdn.datatables.net/1.10.2/js/jquery.dataTables.min.js"></script>
+    <script src="{% static 'js/table.js'%}"></script>
+    <script src="{% static 'js/personal.js'%}"></script>
+    <script src="{% static 'js/Chart.js'%}"></script>
+    <script src="{% static 'js/Chart.min.js'%}"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js" integrity="sha384-0mSbJDEHialfmuBBQP6A4Qrprq5OVfW37PRR3j5ELqxss1yVqOtnepnHVP9aJ7xS" crossorigin="anonymous"></script>
+    <script src="https://code.jquery.com/ui/1.12.0/jquery-ui.js"></script>
+
+</div>
+{% block js %}
+{% endblock %}
+</body>
+</html>

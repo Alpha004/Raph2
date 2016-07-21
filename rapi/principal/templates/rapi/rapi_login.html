@@ -1,0 +1,106 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Login de Rapi</title>
+    <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" integrity="sha384-1q8mTJOASx8j1Au+a5WDVnPi2lkFfwwEAa8hDDdjZlpLegxhjVME1fgjWPGmkzs7" crossorigin="anonymous">
+
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js" integrity="sha384-0mSbJDEHialfmuBBQP6A4Qrprq5OVfW37PRR3j5ELqxss1yVqOtnepnHVP9aJ7xS" crossorigin="anonymous"></script>
+    <style>
+        body{
+            position: relative;
+	height: 100%;
+	background: -webkit-gradient(linear, left top, left bottom, from(#B0C4DE), to(#AFEEEE));
+        }
+  .carousel-inner > .item > img,
+  .carousel-inner > .item > a > img {
+      width: 40%;
+      margin: 1%;
+  }
+  </style>
+</head>
+
+<body>
+<center>
+    <h1>Registro de Atencion al Paciente Hospitalizado</h1>
+    <div class="container">
+  <br>
+  <div id="myCarousel" class="carousel slide" data-ride="carousel" style="border: groove; border-color: #191919">
+    <!-- Indicators -->
+    <ol class="carousel-indicators">
+      <li data-target="#myCarousel" data-slide-to="0" class="active"></li>
+      <li data-target="#myCarousel" data-slide-to="1"></li>
+      <li data-target="#myCarousel" data-slide-to="2"></li>
+      <li data-target="#myCarousel" data-slide-to="3"></li>
+        <li data-target="#myCarousel" data-slide-to="4"></li>
+    </ol>
+
+    <!-- Wrapper for slides -->
+    <div class="carousel-inner" role="listbox">
+      <div class="item active">
+        <img src="{% static 'imagenes/h1.jpg' %}" alt="Chania" width="360" height="145">
+      </div>
+
+      <div class="item">
+        <img src="{% static 'imagenes/h2.jpg' %}" alt="Chania" width="360" height="145">
+      </div>
+
+      <div class="item">
+        <img src="{% static 'imagenes/h3.jpg' %}" alt="Flower" width="360" height="145">
+      </div>
+
+        <div class="item">
+        <img src="{% static 'imagenes/h4.jpg' %}" alt="Flower" width="360" height="145">
+      </div>
+
+        <div class="item">
+        <img src="{% static 'imagenes/h5.jpg' %}" alt="Flower" width="360" height="145">
+      </div>
+
+    </div>
+
+    <!-- Left and right controls -->
+    <a class="left carousel-control" href="#myCarousel" role="button" data-slide="prev">
+      <span class="glyphicon glyphicon-chevron-left" aria-hidden="true"></span>
+      <span class="sr-only">Previous</span>
+    </a>
+    <a class="right carousel-control" href="#myCarousel" role="button" data-slide="next">
+      <span class="glyphicon glyphicon-chevron-right" aria-hidden="true"></span>
+      <span class="sr-only">Next</span>
+    </a>
+  </div>
+</div>
+    <div class="container">
+    <form class="form-horizontal" method="POST">
+        {% csrf_token %}
+        {{ form.as_p }}
+{#        {% for field in form %}#}
+      <div class="form-group">
+
+{#        <label for="inputUser" class="col-sm-1 control-label">Usuario</label>#}
+        <div class="col-sm-offset-3 col-sm-5">
+          USUARIO:<input style="margin-left: 30px" type="text" name="username" placeholder="Ingrese su nombre de usuario...">
+        </div>
+      </div>
+      <div class="form-group">
+{#        <label for="inputUser" class="col-sm-1 control-label">Contraseña</label>#}
+        <div class="col-sm-offset-3 col-sm-5">
+          CONTRASEÑA:<input type="password" name="password" placeholder="Ingrese su contraseña de usuario...">
+        </div>
+      </div>
+{#        {% endfor %}#}
+      <div class="form-group">
+        <div class="col-sm-offset-1 col-sm-10">
+          <button type="submit" class="btn btn-primary btn-lg" >Ingresar</button>
+        </div>
+      </div>
+    </form>
+        </div>
+</center>
+
+</body>
+</html>

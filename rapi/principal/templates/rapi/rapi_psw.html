@@ -1,0 +1,32 @@
+{% extends 'rapi/Layout.html' %}
+
+{% block principal %}
+    <div class="col-md-8 center">
+        <h3>Cambiar Contraseña</h3>
+
+        <label for="usuariosid">Seleccione el usuario</label><select id="usuariosid" name="usuariosname" class="form-control" onchange="UserSelected()">
+            {% for user in users %}
+            <option id="{{ user.id }}" value="{{ user.username }}">{{ user.username }}</option>
+            {% endfor %}
+        </select>
+         <br/>
+        <input style="width: 250px" class="userselected" name="usuario_seleccionado" type="text" onclick="ChangePassword(this)" disabled >
+        <button class="botonSend" onclick="ChangePassword(this)">Enviar Usuario</button>
+        <h2>{{ message_confirm }}</h2>
+    </div>
+{% endblock %}
+{% block js %}
+    <script>
+    function UserSelected(){
+        var selected = $('#usuariosid');
+        var usuario_id = selected.children(":selected").attr("id");
+        var usuario_val = selected.children(":selected").attr("value");
+        $('.userselected').val("Usuario seleccionado: "+ usuario_val+ ".");
+        $('.botonSend').attr("id",usuario_id);
+    }
+    function ChangePassword(e){
+        var userID = e.id
+        $(location).attr('href','http://127.0.0.1:8000/newpswR/'+userID );
+    }
+    </script>
+{% endblock %}

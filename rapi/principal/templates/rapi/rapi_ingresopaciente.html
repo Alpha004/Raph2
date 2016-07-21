@@ -1,0 +1,27 @@
+{% extends 'rapi/Layout.html' %}
+
+{% block principal %}
+    <form method="POST" action="{% url 'ingresopaciente' %}">
+    {% csrf_token %}
+        <div class="col-md-8">
+            <h2>Ingresar nuevo paciente</h2>
+            <h3>{{ mensaje }}</h3>
+            <center>{{ ingresarpacienteform.errors }}{{ ingresarpacienteform.as_p }}
+            <input type="submit" value="Registrar Nuevo Paciente">
+            </center>
+        </div>
+    </form>
+{% endblock %}
+{% block js %}
+    <script>
+  $(function() {
+    $( ".datepicker" ).datepicker({
+      changeMonth: true,
+      changeYear: true,
+      yearRange: "1900:2012",
+      // You can put more options here.
+
+    });
+  });
+  </script>
+{% endblock %}

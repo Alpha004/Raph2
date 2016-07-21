@@ -1,0 +1,14 @@
+{% extends 'rapi/Layout.html' %}
+
+{% block principal %}
+    <form method="POST" action="{% url 'newuser' %}">
+    {% csrf_token %}
+        <div class="col-md-8">
+            <h2>Crear nuevo Usuario</h2>
+            <h3>{{ mensaje }}</h3>
+            <center>{{ createuserform.errors }}{{ createuserform.as_p }}
+            <input type="submit" value="Registrar Usuario">
+            </center>
+        </div>
+    </form>
+{% endblock %}

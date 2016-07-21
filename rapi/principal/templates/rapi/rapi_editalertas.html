@@ -1,0 +1,50 @@
+{% extends 'rapi/Layout.html' %}
+{% block principal %}
+
+    <div class="col-xs-9 col-sm-9">
+        <form method="post" action="">
+        {% csrf_token %}
+        <h3>Llene la siguiente informacion para registrar la atencion como satisfactoria</h3>
+        <div style="width:100%; overflow:auto;">
+            <label for="sel1">Seleccione la persona que atendio al paciente: </label>
+
+            <select class="form-control" id="sel1" name="ListaPersonal" onchange="seleccionarPersonal(this)" >
+            {% for perso in personal %}
+                <option id="{{ perso.ApellidoS }}, {{ perso.NombreS }}" value="{{ perso.id }}">{{ perso.ApellidoS }}, {{ perso.NombreS }} </option>
+           {% endfor %}
+            </select>
+            <h4>CAMA NRO : {{ atencion.NroCamaA_id.NroCamaA }}</h4>
+            <h4>Se solicito atencion el dia: {{ atencion.TiempoA }}</h4>
+            <div id="personal_sel">
+                <h4 class="personalactual" id="{{ atencion.ID_P }}" >{{ atencion.ID_P.NombreS }}, {{ atencion.ID_P.ApellidoS }}</h4>
+            </div>
+            <input id="personal-seleccionado" name="id-personal" type="hidden" > </input>
+        </div>
+        <label for="DescripcionAtencion">Detalles</label>
+        <textarea id="DescripcionAtencion" name="descripcion-atencion" class="form-control" rows="4" >{{ atencion.DescripcionA }}</textarea>
+        <h4>Se ha generado una constancia de atencion al paciente, si desea descargarla, haga click <a href="#">aqui</a></h4>
+        <input id="registrar" type="submit" class="btn btn-success" value="Registrar" > </input>
+        </form>
+      </div>
+
+{% endblock %}
+{% block js %}
+    <script type="application/javascript">
+    function seleccionarPersonal(s){
+        var get_id = [s[s.selectedIndex].value,s[s.selectedIndex].id];
+        enviar_data(get_id);
+    }
+    function enviar_data(get_id){
+        if(get_id[1]!="Seleccione aqui"){
+            $(".personalactual").css("display", "none");
+            //$('.personalactual').style.display = 'none';
+            console.log(document.getElementsByClassName("personalactual"));
+            document.getElementsByClassName("personalactual").innerHTML = "La persona que atendio al paciente fue: "+ get_id[1];
+            $('#personal_sel').html('<h4>La persona que atendio al paciente fue: '+ get_id[1]+'</h4>');
+            document.getElementById("personal-seleccionado").value = get_id[0];
+            $('#personal-seleccionado').html(get_id[0]);
+{#            console.log(document.getElementById("personal-seleccionado").value);#}
+        }
+    }
+    </script>
+{% endblock %}

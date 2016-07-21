@@ -1,0 +1,37 @@
+{% extends 'rapi/Layout.html' %}
+
+{% block principal %}
+
+
+<div class="col-md-8">
+    <table id="tabla" class="display" cellspacing="0" width="100%" >       
+         <thead>
+        <tr>
+            <td>ID</td>
+            <td>Nro Cama</td>
+            <td>Fecha</td>
+            <td>Detalles</td>
+            <td>Estado</td>
+            <td>Opciones</td>
+        </tr>
+        </thead>
+        <tbody>
+        {% for atencionnueva in ObjAtenciones %}
+            <tr>
+                <td>{{ atencionnueva.id}}</td>
+                <td>{{ atencionnueva.NroCamaA.Nro_Cama}}</td>
+                <td>{{ atencionnueva.TiempoA}}</td>
+                <td>{{ atencionnueva.DescripcionA}}</td>
+                {% if atencionnueva.Estado %}
+                <td style="color: #008800" >Atendido</td>
+                {% else %}
+                <td style="color: #942a25">No Atendido</td>
+            {% endif %}
+                <td><a href="{% url 'alertas2' atencionnueva.id %}">Ver o Editar</a> </td>
+        {% endfor %}
+            </tr>
+
+        </tbody>
+    </table>
+</div>
+{% endblock %}

@@ -1,0 +1,131 @@
+{% extends 'rapi/Layout.html' %}
+{% load static %}
+{% block principal %}
+<style>
+    div#paciente{
+        width: 75px;
+        height: 75px;
+        padding: 0.5em;
+        float: left;
+        margin: 10px;
+        background: url("{% static 'imagenes/paciente.jpg' %}");
+        background-size: cover;
+        background-repeat: no-repeat;
+        border: 1px solid;
+    }
+
+    div.cama{
+        width: 100px;
+        background-color: #149bdf;
+        height: 100px;
+        padding: 0.5em;
+        float: left;
+        margin: 10px;
+        border: 1px solid;
+    }
+</style>
+
+<div class="col-md-10">
+    <div id="Camas">
+        {% for camaS in CAMAS %}
+            <div class="col-md-1">
+            {% if camaS.EstadoC %}
+            <div id="{{  camaS.pk }}" class="cama ui-widget-header" style="background-color: #149bdf">Cama Nº: {{ camaS.Nro_Cama }}</div>
+            {% else %}
+            <div id="{{  camaS.pk }}" class="cama ui-widget-header" style="background-color: #008800">Cama Nº: {{ camaS.Nro_Cama }}</div>
+            {% endif %}
+            </div>
+
+        {% endfor %}
+        <input id="cantcamas" value="{{ idarea }}" hidden>
+    </div>
+</div>
+<div class="col-md-10">
+    <p>Paciente: {{ paciente.Nombre_P }} {{ paciente.Apellido_P }}</p>
+    <div id="paciente" class="ui-widget-content ui-draggable ui-draggable-handle"><center>
+    <p>DNI: {{ paciente.Dni_P }}</p></center></div>
+{#    <form action="{% url 'asignarpaciente2' %}" method="post">#}
+{#        {% csrf_token %}#}
+{#    <br/><center><input type="submit" value="Asignar Cama"></center>#}
+{#    </form>#}
+</div>
+{% endblock %}
+{% block js %}
+    <script>
+
+    var RESULTADO;
+    var DragDrop = [];
+    var Dropped = [];
+    var PreviewKey = "";
+    var FirsTime = 1;
+    function obtenerDatosCama(){
+        var area = $('#cantcamas').val();
+        $.ajax({
+            type: "POST",
+            url: {% url 'seleccionararea' %},
+            data : {'pk':area, csrfmiddlewaretoken: '{{ csrf_token }}'},
+            success: function Result(arraycamas){
+                RESULTADO = arraycamas;
+                for(var i =0;i<arraycamas.length;i++){
+                    if (arraycamas[i].fields.EstadoC == True)
+                    {
+{#                      Si la cama esta ocupada por un paciente, se ingresara 1 a la lista DragDrop#}
+                        DragDrop.append(1);
+                    }
+                    else
+                    {
+{#                        caso contrario sera 0 y ademas en el otro array se guardara todas las camas libres#}
+                        DragDrop.append(0);
+                        Dropped[""+ i.toString()] = 0;
+                    }
+                }
+            }
+        })
+    }
+    function RegistrarCama(){
+
+    }
+    $( function() {
+        obtenerDatosCama();
+        $( "#paciente" ).draggable({revert:"invalid"});
+        $( ".cama" ).droppable({
+          drop: function( event, ui ) {
+            $( this )
+              .addClass( "ui-state-highlight" )
+              .find( "div")
+              for(var i =0;i<RESULTADO.length;i++){
+{#                  encuentra la cama seleccion por el ID y comprueba si esta vacia#}
+                if ($(this).attr("id") == RESULTADO[i].fields.pk){
+                  if(DragDrop[i]==0){
+{#                      si esta vacia se podra comprobar #}
+                      Dropped[""+ i.toString()] = 1;
+
+                      PreviewKey = i.toString();
+{#                      si ejecuta por primera vez, este sera el indicador#}
+                      if(FirsTime==1)
+                        FirsTime=0;
+                      else
+                        Dropped[PreviewKey]=0;
+                  }
+                  }
+              }
+          }
+        });
+  } );
+{#        function mostrarCamas(select){#}
+{#            area_seleccionada = select[select.selectedIndex].id#}
+{#            $.ajax({#}
+{#                type: "POST",#}
+{#                url: {% url 'seleccionararea' %}#}
+{#                data : {'pk':area_seleccionada, csrfmiddlewaretoken: '{{ csrf_token }}'},#}
+{#                success: function MostrarData(arraycamas){#}
+{#                    for(var i=0; i<arraycamas.length;i++)#}
+{#                    {#}
+{#                        $(#Camas).html('<div class="cama">Cama Nº: "+ arraycamas.fields.Nro_Cama +" </div>')#}
+{#                    }#}
+{#                }#}
+{##}
+{#            });#}
+{#        }#}
+    </script>
+{% endblock %}

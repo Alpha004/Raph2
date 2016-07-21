@@ -1,0 +1,102 @@
+{% extends 'rapi/Layout.html' %}
+{% block principal %}
+
+<div class="row">
+  <div class="col-sm-9">
+    <h2>ALERTAS EN TIEMPO REAL</h2>
+    <div class="row">
+      <div class="col-xs-12 col-sm-12">
+        <div class="panel panel-default">
+            <div style="width:100%; height:450px; overflow:auto;">
+
+                <table id="tabla1" border="solid" class="table table-striped">
+                    <thead>
+                        <tr>
+                            <th>Descripcion de Alerta</th>
+                            <th>Opciones de Alerta</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                    {% for local_alerta in alertas %}
+                        <tr id="{{ local_alerta.NroCamaA }}" >
+                            <div class="btn-group" role="group" aria-label="...">
+
+                                <th> Cama Nro: {{ local_alerta.NroCamaA.Nro_Cama }} // {{ local_alerta.TiempoA }}</th>
+                                <th><center><button id="atendido" name="{{ local_alerta.id }}" type="button" class="btn btn-success" data-toggle="modal" data-target="#myModal" onclick="enviar_atencion(this,{{ local_alerta.id }})"><span class="glyphicon glyphicon-ok" aria-hidden="true"></span> Atendido</button>
+                                    <button id="noatendido" name="{{ local_alerta.id }}" type="button" class="btn btn-danger" data-toggle="modal" data-target="#myModal2" onclick="enviar_atencion(this,{{ local_alerta.id }})"><span class="glyphicon glyphicon-remove" aria-hidden="true" ></span> No Atendido</button></center></th>
+{#                                {% empty %}#}
+{#                                <th><center><button id="atendido" name="ate1" type="button" class="btn btn-success" data-toggle="modal" data-target="#myModal" onclick="habilitar1(this)"><span class="glyphicon glyphicon-ok" aria-hidden="true"></span> Atendido</button>#}
+{#                                    <button id="noatendido" name="ate2" type="button" class="btn btn-danger" data-toggle="modal" data-target="#myModal2" onclick="habilitar1(this)"><span class="glyphicon glyphicon-remove" aria-hidden="true" ></span> No Atendido</button></center></th>#}
+                             </div>
+                        </tr>
+                     {% endfor %}
+
+                        <div class="modal fade" id="myModal" role="dialog">
+                            <div class="modal-dialog">
+
+                              <!-- Modal content-->
+                              <div class="modal-content">
+                                <div class="modal-header">
+                                  <button id="close1" type="button" class="close" data-dismiss="modal">&times;</button>
+                                  <h4 class="modal-title">Registro</h4>
+                                </div>
+                                <div class="modal-body">
+                                  <p>La atencion se registro como ATENDIDA, complete los datos para completar el registro al 100%.</p>
+                                </div>
+                                <div class="modal-footer">
+                                  <button id="close2" type="button" class="btn btn-default" data-dismiss="modal" >Cerrar</button>
+                                </div>
+                              </div>
+
+                            </div>
+                          </div>
+                          <div class="modal fade" id="myModal2" role="dialog">
+                            <div class="modal-dialog">
+
+                              <!-- Modal content-->
+                              <div class="modal-content">
+                                <div class="modal-header">
+                                  <h4 class="modal-title">Registro</h4>
+                                </div>
+                                <div class="modal-body">
+                                  <p>La atencion se registro como NO ATENDIDA, complete los datos para completar el registro al 100%.</p>
+                                </div>
+                                <div class="modal-footer">
+                                  <input id="close1" type="button" class="btn btn-default" data-dismiss="modal" value="Cerrar" onclick="habilitar1();"> </input>
+                                </div>
+                              </div>
+
+                            </div>
+                          </div>
+
+                    </tbody>
+                </table>
+            </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+{% endblock %}
+{% block js %}
+<script type="application/javascript">
+    function habilitar1(button)
+    {
+        enviar_atencion(button);
+    }
+    function enviar_atencion(button)
+    {
+        var ID = button.id
+        if (ID=='atendido')
+        {
+             $(location).attr('href','http://127.0.0.1:8000/editar-alertas1/'+button.name );
+        }
+        else{
+             $(location).attr('href','http://127.0.0.1:8000/editar-alertas2/'+button.name);
+        }
+    }
+
+</script>
+{% endblock %}
+

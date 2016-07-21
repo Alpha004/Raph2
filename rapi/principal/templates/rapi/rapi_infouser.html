@@ -1,0 +1,64 @@
+{% extends 'rapi/Layout.html' %}
+
+{% block principal %}
+    <div class="col-md-6">
+        <h3>Ver Informacion de Usuario</h3>
+    <form method="post">
+    {% csrf_token %}
+        <label for="usuariosid">Seleccione el usuario y haga click en Ver Informacion</label><select id="usuariosid" name="usuariosname" class="form-control">
+            {% for user in users %}
+            <option id="{{ user.id }}" name="{{ user.username }}">{{ user.username }}</option>
+            {% endfor %}
+        </select>
+        <input type="button" value="Ver Informacion" onclick="MostrarInfo()">
+    </form>
+    <h5>Nombre de Usuario: </h5>
+    <input type="text" id="Nombre" disabled>
+    <h5>Apellido de Usuario: </h5>
+    <input type="text" id="Apellido" disabled>
+    <h5>Email de Usuario: </h5>
+    <input type="text" id="Email" disabled>
+    <h5>¿Usuario Activo?: </h5>
+    <input type="text" id="Activo" disabled>
+    <h5>¿Administrador?: </h5>
+    <input type="text" id="Superuser" disabled>
+    </div>
+    <div class="col-md-4">
+        <br/>
+        <br/>
+        <br/>
+        <br/>
+    <label for="Estadistica">Si desea ver como se desempeño el usuario haga click aqui</label>
+    <input id="Estadistica" style="width: auto; height: 50px" type="button" class="button btn-default" value="Mostrar Estadisticas de Trabajo">
+
+    </div>
+
+{% endblock %}
+{% block js %}
+    <script>
+    function MostrarInfo(){
+        var sel = $('#usuariosid');
+        var get_selections = sel.children(":selected").attr("id");
+        console.log(get_selections);
+         $.ajax({
+                type : "POST",
+                data : {'seleccion':get_selections, csrfmiddlewaretoken: '{{ csrf_token }}'},
+                url  : "{% url 'infouserR' %}",
+                success: function(userinfo){
+                    console.log(userinfo)
+                    $('#Nombre').val(userinfo[0].fields.first_name)
+                    $('#Apellido').val(userinfo[0].fields.last_name)
+                    $('#Email').val(userinfo[0].fields.email)
+                    if(userinfo[0].fields.is_superuser == true)
+                        $('#Superuser').val("Si")
+                    else
+                        $('#Superuser').val("No")
+                    if(userinfo[0].fields.is_active == true)
+                        $('#Activo').val("Si")
+                    else
+                        $('#Activo').val("No")
+                }
+    })
+    }
+    </script>
+{% endblock %}

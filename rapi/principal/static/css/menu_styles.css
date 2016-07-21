@@ -1,0 +1,32 @@
+/*
+Contiene los estilos de la pagina web
+*/
+
+body{
+	position: relative;
+	height: 100%;
+	background: -webkit-gradient(linear, left top, left bottom, from(#ccc), to(#fff));
+
+}
+h1{
+	position: relative;
+
+}
+h2{
+	border: 1px solid;
+	background-color: transparent;
+}
+input button{
+	margin-top: 40%
+	color: rgb(webkit-gradient(linear,from()));
+}
+.BotonPaciente{
+	display: inline-block;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    padding: 5px;
+    transition: 0.3s;
+}
+.BotonPaciente:hover {
+	box-shadow: 0 0 2px 1px rgba(0, 140, 186, 0.5);
+}

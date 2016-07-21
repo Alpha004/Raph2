@@ -1,0 +1,21 @@
+{% extends 'rapi/Layout.html' %}
+
+{% block principal %}
+{% load static %}
+
+<div class="row">
+  <div class="col-xs-6 col-md-3">
+        <center>
+{#      <img src="{% static 'imagenes/hospitalizacion1.jpg'%}" width="100%" height="200px">#}
+        <video width="350" controls autoplay>
+            <source src="{% static 'imagenes/videoprueba.mp4' %}" type="video/mp4">
+        </video>
+        </center>
+  </div>
+    <div class="col-md-5">El Sistema de Registro de Atencion al Paciente Hospitalizado es el encargado de brindar reportes y resultados en mutua comunicacion con las camaras Raspberry Pi instaladas en las camas de los pacientes hospitalizados con el fin de mejorar la atencion, facilitar la vigilancia al personal medico y el pedido de atencion del paciente</div>
+</div><div class="col-md-10">
+</div>
+<div class="wrapper-copyright">
+    <div class="copyright">@2016 - Jesus Alpaca</div>
+</div><!-- end wrapper-copyright -->
+{% endblock %}

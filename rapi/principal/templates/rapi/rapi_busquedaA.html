@@ -1,0 +1,14 @@
+{% extends 'rapi/Layout.html' %}
+
+{% block principal %}
+    <div class="col-md-8">
+        <h3>Busqueda Avanzada del Sistema</h3>
+        <br/>
+        <form method="POST" action="{% url 'busquedaResult' %}">
+            {% csrf_token %}
+        <h4>Ingrese ID del Registro y Presione Enter</h4>
+        <input name="IDATENCION" type="text" width="50px" />
+        </form>
+    </div>
+
+{% endblock %}

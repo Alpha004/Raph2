@@ -1,0 +1,33 @@
+{% extends 'rapi/Layout.html' %}
+{% load static %}
+
+{% block principal %}
+<link rel="stylesheet" href="http://www.w3schools.com/lib/w3.css">
+<div class="col-md-3">
+{#    <form action="{% url 'ingresopaciente' %}">#}
+        <div class="w3-container w3-orange">
+            <h3>Registrar Nuevo Paciente</h3>
+        </div>
+{#        <center><input type="image" src=" " alt="Submit" width="200" height="200"></center>#}
+        <center><a class="BotonPaciente" href="{% url 'ingresopaciente' %}"><img src="{% static 'imagenes/pacientes1.jpg' %}" alt="1" width="250" height="250"></a></center>
+{#    </form>#}
+</div>
+<div class="col-md-3">
+    <form action="{% url 'asignarpaciente' %}">
+        <div class="w3-container w3-blue">
+            <h3>Reasignar Paciente</h3>
+        </div>
+        <center><a class="BotonPaciente" href="{% url 'asignarpaciente' %}"><img src="{% static 'imagenes/pacientes2.jpg' %}" alt="1" width="250" height="250"></a></center>
+{#        <center><input type="image" src="{% static 'imagenes/pacientes2.jpg' %}" alt="Submit" width="200" height="200"></center>#}
+    </form>
+</div>
+<div class="col-md-4">
+    <form action="{% url 'salidapaciente' %}">
+        <div class="w3-container w3-green">
+            <h3>Registrar Salida del Paciente</h3>
+        </div>
+        <center><a class="BotonPaciente" href="{% url 'salidapaciente' %}"><img src="{% static 'imagenes/pacientes3.jpg' %}" alt="1" width="250" height="250"></a></center>
+{#        <center><input type="image" src="{% static 'imagenes/pacientes3.jpg' %}" alt="Submit" width="200" height="200"></center>#}
+    </form>
+</div>
+{% endblock %}

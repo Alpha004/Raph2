@@ -1,0 +1,17 @@
+{% extends 'rapi/Layout.html' %}
+{% block principal %}
+
+    <div class="col-md-8 center" align="center">
+    <form method="post" action=".">
+        {% csrf_token %}
+        <br/>
+        <label for="passw1">Ingrese nueva contraseña: </label>
+        <input id="passw1" name="password" type="password">
+        <br/>
+        <label for="passw2">Ingrese nuevamente la contraseña: </label>
+        <input id="passw2" name="password2" type="password">
+        <br/>
+        <input type="submit" value="Cambiar Contraseña">
+        </form>
+    </div>
+{% endblock %}

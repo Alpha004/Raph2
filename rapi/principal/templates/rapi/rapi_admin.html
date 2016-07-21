@@ -1,0 +1,26 @@
+{% extends 'rapi/Layout.html' %}
+
+{% block principal %}
+    <div class="col-md-8 row">
+    <div class="col-md-offset-4">
+        <center><h2>VENTANA DE ADMINISTRADOR</h2></center>
+    <table align="center" style="width: 100%">
+        <tbody>
+        <tr >
+            <td align="center" style="height: 50px"><button style="border: 2px black solid; font-size: larger" onclick="location=({% url 'reporte' %})">Generar Reportes</button></td>
+            <td align="center" style="height: 50px"><button style="border: 2px black solid; font-size: larger" onclick="location=({% url 'newuser' %})">Crear Usuario</button></td>
+        </tr>
+        <tr>
+            <td align="center" style="height: 50px"><button style="border: 2px black solid; font-size: larger" onclick="location=({% url 'busquedaA' %})">Busqueda Avanzada</button></td>
+            <td align="center" style="height: 50px"><button style="border: 2px black solid; font-size: larger" onclick="location=({% url 'newpsw' %})">Restablecer Contraseña</button></td>
+        </tr>
+        <tr>
+            <td align="center" style="height: 50px"><button style="border: 2px black solid; font-size: larger" onclick="location=({% url 'infouser' %})">Informacion de un Usuario</button></td>
+        </tr>
+        </tbody>
+    </table></div>
+         </div>
+    <div class="col-md-10">
+        <center><h3>La ventana de administración es para poder controlar de mejor manera el sistema, adquiriendo permisos mayores a los operarios, verificando sus acciones, creando reportes, creando nuevos usuarios, etc.</h3></center>
+    </div>
+{% endblock %}

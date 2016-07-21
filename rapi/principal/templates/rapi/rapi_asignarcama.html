@@ -1,0 +1,31 @@
+{% extends 'rapi/Layout.html' %}
+{% block principal %}
+<div class="col-md-10">
+    <form method="post" action="{% url 'asignarpaciente2' paciente_nuevo.pk%}">
+    {% csrf_token %}
+    <label for="areas">Seleccione un área y haga click en Mostrar Camas</label>
+        <select multiple class="form-control" id="areas"  onchange="mostrarSeleccion(this)">
+            {% for area in Areas %}
+            <option id="{{ area.id }}" value="{{ area.Descripcion_Area }}">{{ area.Descripcion_Area }}</option>
+            {% endfor %}
+        </select>
+    <h3 id="areah3"></h3>
+    <input id="idarea" name="areaselect" hidden>
+    <input class="btn btn-success" type="submit" value="Mostrar Camas">
+    </form>
+</div>
+
+
+{% endblock %}
+{% block js %}
+    <script>
+        function mostrarSeleccion(select){
+            area_seleccionada = $('#areas').val();
+            id_area = select[select.selectedIndex].id;
+            console.log(area_seleccionada,id_area);
+            $('#areah3').val("Area seleccionada: "+area_seleccionada)
+            $('#areah3').html("Area seleccionada: "+area_seleccionada)
+            $('#idarea').val(id_area)
+        }
+    </script>
+{% endblock %}
