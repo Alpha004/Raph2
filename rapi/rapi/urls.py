@@ -43,6 +43,7 @@ urlpatterns = [
     url(r'^pacienteasignar/(?P<pk>.+)/$', 'principal.views.AsignarPaciente',name='asignarpaciente'),
     url(r'^pacienteasignar2/(?P<pk>.+)/$', 'principal.views.AsignarPaciente2',name='asignarpaciente2'),
     url(r'^cama/', 'principal.views.SeleccionarCama',name='seleccionaracama'),
+    url(r'^asignarcama/', 'principal.views.IngresarPacienteCama',name='asignarcama'),
     url(r'^pacientesalida/', 'principal.views.SalidaPaciente',name='salidapaciente'),
     url(r'^pacientes/', 'principal.views.PacienteView',name='menupaciente'),
 ]
