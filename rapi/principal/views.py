@@ -201,7 +201,7 @@ def reporteGen(request):
 
             if ATENCIONES_MES1 is None:
                 p.setFont('Helvetica',14)
-                p.drawString(235,545,"TOTAL DE ATENCIONES")
+                p.drawString(235,545,"TOTAL DE TENCIONES")
                 cant_atendidos , cant_noatendidos = 0,0
                 for atencioN in ATENCIONES:
                     if atencioN.Estado == True:
@@ -589,7 +589,6 @@ def informacionUserViewR(request):
         iduser=request.POST["seleccion"]
         usuarioseleccionado = User.objects.filter(pk=iduser)
         userinfo = serializers.serialize('json',usuarioseleccionado)
-        print "convirtio"
         # registros = Edicion.objects.filter(IdUsuarios_id=usuarioseleccionado)
         # registros_editados = registros.count()
         # registros2 =Atencion.objects.filter(Nombre_U_id=usuarioseleccionado)
@@ -619,9 +618,9 @@ def IngresoPaciente(request):
                 ingresarpacienteform.save()
                 pacientenuevo = Paciente.objects.get(Dni_P=DNI)
                 pacientenuevo.Fecha_Ingreso = timezone.now()
-                pk = pacientenuevo.id
+                # pk = pacientenuevo.id
                 mensaje = "Nuevo paciente ingresado con exito"
-                return redirect(reverse('asignarpaciente'),kwargs={'pk':pk})
+                return redirect(reverse('asignarpaciente',kwargs={'pk': pacientenuevo.pk}))
         else:
             mensaje = "Error al ingresar un Paciente, intente nuevamente"
             return render(request,'rapi/rapi_pacientes.html',locals())
@@ -646,8 +645,13 @@ def PacienteView(request):
 
 
 def SeleccionarCama(request):
-    pass
-
+    if request.POST:
+        pk_area= request.POST["pk"]
+        resultado = Cama.objects.filter(Area=pk_area)
+        arraycamas = serializers.serialize('json',resultado)
+        return HttpResponse(arraycamas,content_type='application/json')
+    else:
+        return HttpResponse("No se pudo encontrar data del area")
 
 def AsignarPaciente2(request,pk):
     if(request.POST):
@@ -661,6 +665,23 @@ def AsignarPaciente2(request,pk):
                 Estados_Cama.append(1)
         paciente = Paciente.objects.get(pk=pk)
         return render(request,'rapi/rapi_asignarcama2.html',locals())
+    return redirect(reverse('asignarpaciente',kwargs={'pk':pk}))
+    # return render(request,'rapi/rapi_pacientes.html')
+
+def IngresarPacienteCama(request):
+    if request.POST:
+        pkcama = request.POST["pkcama"]
+        pkpaciente= request.POST["pkpaciente"]
+        cama_selected = Cama.objects.get(id=pkcama)
+        paciente_selected = Paciente.objects.get(id=pkpaciente)
+        cama_selected.Id_paciente = paciente_selected
+        cama_selected.EstadoC = True
+        cama_selected.save()
+        mensaje = "Asignado Correctamente a la cama nro: " + cama_selected.Nro_Cama
+        print(mensaje)
+        # mensaje_json=serializers.serialize('json',mensaje)
+        return HttpResponse(mensaje)
     else:
-        return redirect(reverse('asignarpaciente'))
-    return render(request,'rapi/rapi_pacientes.html')
+        mensaje = "Error de Envio y Asignacion, Revise el codigo para verificar el metodo de envio(Get/Post)"
+        # mensaje_json=serializers.serialize('json',mensaje)
+        return HttpResponse(mensaje)
