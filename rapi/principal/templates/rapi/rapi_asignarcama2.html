@@ -16,7 +16,6 @@
 
     div.cama{
         width: 100px;
-        background-color: #149bdf;
         height: 100px;
         padding: 0.5em;
         float: left;
@@ -30,9 +29,9 @@
         {% for camaS in CAMAS %}
             <div class="col-md-1">
             {% if camaS.EstadoC %}
-            <div id="{{  camaS.pk }}" class="cama ui-widget-header" style="background-color: #149bdf">Cama Nº: {{ camaS.Nro_Cama }}</div>
+            <div id="{{  camaS.pk }}" class="cama cama1 ui-widget-header" style="background-color: #149bdf">Cama Nº: {{ camaS.Nro_Cama }}</div>
             {% else %}
-            <div id="{{  camaS.pk }}" class="cama ui-widget-header" style="background-color: #008800">Cama Nº: {{ camaS.Nro_Cama }}</div>
+            <div id="{{  camaS.pk }}" class="cama cama2 ui-widget-header" style="background-color: #008800">Cama Nº: {{ camaS.Nro_Cama }}</div>
             {% endif %}
             </div>
 
@@ -41,6 +40,7 @@
     </div>
 </div>
 <div class="col-md-10">
+    <input id="idpaciente" value="{{ paciente.pk }}" hidden>
     <p>Paciente: {{ paciente.Nombre_P }} {{ paciente.Apellido_P }}</p>
     <div id="paciente" class="ui-widget-content ui-draggable ui-draggable-handle"><center>
     <p>DNI: {{ paciente.Dni_P }}</p></center></div>
@@ -48,7 +48,29 @@
 {#        {% csrf_token %}#}
 {#    <br/><center><input type="submit" value="Asignar Cama"></center>#}
 {#    </form>#}
+    <button onclick="RegistrarCama()" data-toggle="modal" data-target="#modalResult">Asignar Cama</button>
 </div>
+    <div class="modal fade" id="modalResult" role="dialog">
+                            <div class="modal-dialog">
+
+                              <!-- Modal content-->
+                              <div class="modal-content">
+                                <div class="modal-header">
+                                  <h4 class="modal-title">RESULTADO DE ASIGNACION</h4>
+                                </div>
+                                <div class="modal-body">
+                                  <p id="resultmessage">ASIGNACION COMPLETA</p>
+                                </div>
+                                <div class="modal-footer">
+                                    <form method="post" action="{% url 'index' %}">
+                                        {% csrf_token %}
+                                        <input id="close1" type="submit" class="btn btn-default" data-dismiss="modal" value="Cerrar" >
+                                    </form>
+                                </div>
+                              </div>
+
+                            </div>
+                          </div>
 {% endblock %}
 {% block js %}
     <script>
@@ -58,24 +80,26 @@
     var Dropped = [];
     var PreviewKey = "";
     var FirsTime = 1;
+    var ID_cama_seleccionada=0;
     function obtenerDatosCama(){
         var area = $('#cantcamas').val();
         $.ajax({
             type: "POST",
-            url: {% url 'seleccionararea' %},
+            url: {% url 'seleccionaracama' %},
             data : {'pk':area, csrfmiddlewaretoken: '{{ csrf_token }}'},
             success: function Result(arraycamas){
                 RESULTADO = arraycamas;
+
                 for(var i =0;i<arraycamas.length;i++){
-                    if (arraycamas[i].fields.EstadoC == True)
+                    if (arraycamas[i].fields.EstadoC == true)
                     {
 {#                      Si la cama esta ocupada por un paciente, se ingresara 1 a la lista DragDrop#}
-                        DragDrop.append(1);
+                        DragDrop.push(1);
                     }
                     else
                     {
 {#                        caso contrario sera 0 y ademas en el otro array se guardara todas las camas libres#}
-                        DragDrop.append(0);
+                        DragDrop.push(0);
                         Dropped[""+ i.toString()] = 0;
                     }
                 }
@@ -83,49 +107,45 @@
         })
     }
     function RegistrarCama(){
-
+         pkcama1 = ID_cama_seleccionada;
+         pkpaciente1 = $('#idpaciente').val();
+         $.ajax({
+            type: "POST",
+            url: {% url 'asignarcama' %},
+            data : {'pkcama': pkcama1,'pkpaciente': pkpaciente1, csrfmiddlewaretoken: '{{ csrf_token }}'},
+            success: function Result(mensaje) {
+                console.log(mensaje)
+                $('#resultmessage').html(mensaje)
+            }
+            });
     }
     $( function() {
         obtenerDatosCama();
         $( "#paciente" ).draggable({revert:"invalid"});
         $( ".cama" ).droppable({
           drop: function( event, ui ) {
-            $( this )
-              .addClass( "ui-state-highlight" )
-              .find( "div")
-              for(var i =0;i<RESULTADO.length;i++){
-{#                  encuentra la cama seleccion por el ID y comprueba si esta vacia#}
-                if ($(this).attr("id") == RESULTADO[i].fields.pk){
-                  if(DragDrop[i]==0){
-{#                      si esta vacia se podra comprobar #}
-                      Dropped[""+ i.toString()] = 1;
-
-                      PreviewKey = i.toString();
-{#                      si ejecuta por primera vez, este sera el indicador#}
-                      if(FirsTime==1)
-                        FirsTime=0;
-                      else
-                        Dropped[PreviewKey]=0;
-                  }
+            if($( this ).find( "#paciente")){
+                  for(var i =0;i<RESULTADO.length;i++){
+    {#                  encuentra la cama seleccion por el ID y comprueba si esta vacia#}
+                    if ($(this).attr("id") == RESULTADO[i].pk){
+                      if(DragDrop[i]==0){
+    {#                      si esta vacia se podra comprobar #}
+                          Dropped[""+ i.toString()] = 1;
+                          $('.cama2').css("background-color","#008800");
+                          $(this).css("background-color","yellow");
+    {#                      si ejecuta por primera vez, este sera el indicador#}
+                          ID_cama_seleccionada = RESULTADO[i].pk;
+                          if(FirsTime==1)
+                            FirsTime=0;
+                          else
+                            Dropped[PreviewKey]=0;
+                          PreviewKey = i.toString();
+                      }
+                      }
                   }
               }
-          }
+              }
         });
   } );
-{#        function mostrarCamas(select){#}
-{#            area_seleccionada = select[select.selectedIndex].id#}
-{#            $.ajax({#}
-{#                type: "POST",#}
-{#                url: {% url 'seleccionararea' %}#}
-{#                data : {'pk':area_seleccionada, csrfmiddlewaretoken: '{{ csrf_token }}'},#}
-{#                success: function MostrarData(arraycamas){#}
-{#                    for(var i=0; i<arraycamas.length;i++)#}
-{#                    {#}
-{#                        $(#Camas).html('<div class="cama">Cama Nº: "+ arraycamas.fields.Nro_Cama +" </div>')#}
-{#                    }#}
-{#                }#}
-{##}
-{#            });#}
-{#        }#}
     </script>
 {% endblock %}
