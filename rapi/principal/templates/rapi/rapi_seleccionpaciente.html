@@ -1,0 +1,36 @@
+{% extends 'rapi/Layout.html' %}
+
+{% block principal %}
+
+<div class="col-md-10 row">
+
+    <h2>Reasignacion del Paciente</h2>
+    <label for="pacientes">Seleccione un paciente</label><select id="pacientes" onchange="changepatient(this)">
+    {% for paciente in pacientes %}
+        <option id="{{ paciente.id }}" value="{{ paciente.Apellido_P }}, {{ paciente.Nombre_P }}">{{ paciente.Apellido_P }}, {{ paciente.Nombre_P }}</option>
+    {% endfor %}
+    </select>
+
+    <br/>
+
+    <label for="pacienteseleccionado">Paciente seleccionado:</label>
+    <input id="pacienteseleccionado" type="text" value="">
+    <br/>
+    <button id="btnreasignar" onclick="VerCamas()">Ver Camas Disponibles</button>
+
+</div>
+
+{% endblock %}
+{% block js %}
+    <script>
+    var idselected=0;
+    function changepatient(sel){
+        idselected = sel[sel.selectedIndex].id;
+        var valueselected = sel[sel.selectedIndex].value;
+        $('#pacienteseleccionado').val(valueselected)
+    }
+    function VerCamas(){
+        $(location).attr('href','http://127.0.0.1:8000/pacienteasignar/'+idselected );
+    }
+    </script>
+{% endblock %}

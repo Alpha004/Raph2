@@ -455,6 +455,19 @@ def editaralertas2(request, pk):
 @login_required
 def editarAlertas(request, pk):
     atencion = Atencion.objects.get(pk=pk)
+    try:
+        atencion.PacienteA = atencion.NroCamaA.Id_paciente
+        atencion.save()
+    except Exception as e:
+        return HttpResponse("Error! al parece la camara detecto una señal, pero no hay un paciente en la cama,"
+                            " esto es una alerta negativa, informe al administrador que elimine esta alerta"
+                            " en la base de datos")
+    # pkpaciente = atencion.NroCamaA.Id_paciente
+    # print pkpaciente
+    # paciente = int(pkpaciente.pk)
+    # print paciente
+    # atencion.PacienteA = Paciente.objects.get(pk=paciente)
+
     personal = Personal.objects.all()
     current_edition = None
     try:
@@ -482,7 +495,7 @@ def editarAlertas(request, pk):
     else:
         return render(request, "rapi/rapi_editalertas.html",locals())
 
-
+@login_required
 def reporteAjax(request):
     if(request.method == 'POST'):
         fecha_actual = datetime.datetime.now()
@@ -505,11 +518,11 @@ def reporteAjax(request):
             dato1 = serializers.serialize('json',atencionesM)
         # atenciones1 = Atencion.objects.filter(TiempoA__lte=datetime.date.today())
         return HttpResponse(dato1,content_type='application/json')
-
+@login_required
 def AdministradorView(request):
     return render(request,'rapi/rapi_admin.html')
 
-
+@login_required
 def CrearUsuarioView(request):
     mensaje = ""
     if(request.POST):
@@ -524,10 +537,11 @@ def CrearUsuarioView(request):
     else:
         createuserform = CreateUser()
     return render(request,'rapi/rapi_crearuser.html',locals())
-
+@login_required
 def busquedaView(request):
     return render(request,'rapi/rapi_busquedaA.html')
 
+@login_required
 def BusquedaResult(request):
     atencion,EdicionesxUser,Totalediciones,Last_Time = "","","",""
     if request.POST:
@@ -547,12 +561,14 @@ def BusquedaResult(request):
             Totalediciones = 1
         return render(request,'rapi/rapi_busquedaResult.html',locals())
     return render(request,'rapi/rapi_busquedaResult.html',locals())
+
+@login_required
 def cambiarpswView(request):
     users = User.objects.all()
     message_confirm = ""
     return render(request,'rapi/rapi_psw.html',locals())
 
-
+@login_required
 def informacionUserView(request):
     users = User.objects.all()
     return render(request,'rapi/rapi_infouser.html',locals())
@@ -561,7 +577,7 @@ def informacionUserView(request):
 def ImprimirInformacion(request):
     pass
 
-
+@login_required
 def cambiarpswViewR(request,pk):
     usuario = User.objects.get(pk=pk)
     if request.POST:
@@ -583,7 +599,7 @@ def cambiarpswViewR(request,pk):
             message_confirm = "Ingrese la contraseña que desea cambiar en ambos campos"
     return render(request,'rapi/rapi_pswR.html',locals())
 
-
+@login_required
 def informacionUserViewR(request):
     if request.POST:
         iduser=request.POST["seleccion"]
@@ -602,7 +618,7 @@ def informacionUserViewR(request):
 def busquedaViewAjax(request):
     pass
 
-
+@login_required
 def IngresoPaciente(request):
     mensaje = ""
     if(request.POST):
@@ -629,21 +645,22 @@ def IngresoPaciente(request):
     return render(request,'rapi/rapi_ingresopaciente.html',locals())
 
 
-
+@login_required
 def AsignarPaciente(request,pk):
     Areas = Area.objects.all()
     paciente_nuevo = Paciente.objects.get(pk=pk)
     return render(request,'rapi/rapi_asignarcama.html',locals())
 
-
+@login_required
 def SalidaPaciente(request):
-    return render(request,'rapi/rapi_salidapaciente.html')
+    camas_seleccionadas= Cama.objects.filter(EstadoC=True,ActivaC=True).exclude(Id_paciente=None)
+    return render(request,'rapi/rapi_salidapaciente.html',locals())
 
-
+@login_required
 def PacienteView(request):
     return render(request,'rapi/rapi_pacientes.html')
 
-
+@login_required
 def SeleccionarCama(request):
     if request.POST:
         pk_area= request.POST["pk"]
@@ -653,27 +670,34 @@ def SeleccionarCama(request):
     else:
         return HttpResponse("No se pudo encontrar data del area")
 
+@login_required
 def AsignarPaciente2(request,pk):
     if(request.POST):
         idarea = request.POST["areaselect"]
         CAMAS = Cama.objects.filter(Area=idarea)
-        Estados_Cama = []
-        for estadocama in CAMAS:
-            if estadocama.EstadoC is False:
-                Estados_Cama.append(0)
-            else:
-                Estados_Cama.append(1)
         paciente = Paciente.objects.get(pk=pk)
         return render(request,'rapi/rapi_asignarcama2.html',locals())
+
+
     return redirect(reverse('asignarpaciente',kwargs={'pk':pk}))
     # return render(request,'rapi/rapi_pacientes.html')
 
+@login_required
 def IngresarPacienteCama(request):
     if request.POST:
         pkcama = request.POST["pkcama"]
         pkpaciente= request.POST["pkpaciente"]
         cama_selected = Cama.objects.get(id=pkcama)
         paciente_selected = Paciente.objects.get(id=pkpaciente)
+        try:
+            current_bed = Cama.objects.get(Id_paciente=paciente_selected)
+            #reasignacion de cama
+            current_bed = Cama.objects.get(Id_paciente=paciente_selected)
+            current_bed.Id_paciente = None
+            current_bed.EstadoC = False
+            current_bed.save()
+        except Exception as e:
+            pass
         cama_selected.Id_paciente = paciente_selected
         cama_selected.EstadoC = True
         cama_selected.save()
@@ -685,3 +709,31 @@ def IngresarPacienteCama(request):
         mensaje = "Error de Envio y Asignacion, Revise el codigo para verificar el metodo de envio(Get/Post)"
         # mensaje_json=serializers.serialize('json',mensaje)
         return HttpResponse(mensaje)
+
+@login_required
+def ListaPaciente(request):
+    pacientes = Paciente.objects.filter(Activo_P=True,Fecha_Salida=None)
+    return render(request,'rapi/rapi_seleccionpaciente.html',locals())
+
+@login_required
+def MarcarSalida(request):
+    mensaje = ""
+    if request.POST:
+        paciente_actual,cama_actual = None,None
+        pkpaciente= request.POST["pkpaciente"]
+        try:
+            paciente_actual= Paciente.objects.get(pk=pkpaciente)
+            cama_actual= Cama.objects.get(Id_paciente=paciente_actual)
+        except Exception as e:
+            mensaje="Error al seleccionar el paciente, informe al administrador"
+            return HttpResponse(mensaje)
+        paciente_actual.Fecha_Salida = timezone.now()
+        paciente_actual.Activo_P = False
+        cama_actual.EstadoC = False
+        cama_actual.Id_paciente = None
+        paciente_actual.save()
+        cama_actual.save()
+        mensaje = "Se marco la salida del paciente satisfactoriamente!"
+    else:
+        mensaje = "Error al enviar los datos, revise el metodo de envio Http"
+    return HttpResponse(mensaje)

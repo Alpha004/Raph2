@@ -68,6 +68,7 @@ class Atencion(models.Model):
     DescripcionA = models.TextField(default=None, null=True )
     Estado = models.BooleanField(default=False)
     NroCamaA = models.ForeignKey(Cama)
+    PacienteA = models.ForeignKey(Paciente, default=None,null=True)
     Nombre_U = models.ForeignKey(User, default=None, null=True)
     ID_P = models.ForeignKey(Personal, default=None, null=True)
     AlertaMensajeA = models.CharField(max_length=50,default="Necesito Atencion urgente!")

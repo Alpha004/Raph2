@@ -107,17 +107,23 @@
         })
     }
     function RegistrarCama(){
-         pkcama1 = ID_cama_seleccionada;
-         pkpaciente1 = $('#idpaciente').val();
-         $.ajax({
-            type: "POST",
-            url: {% url 'asignarcama' %},
-            data : {'pkcama': pkcama1,'pkpaciente': pkpaciente1, csrfmiddlewaretoken: '{{ csrf_token }}'},
-            success: function Result(mensaje) {
-                console.log(mensaje)
-                $('#resultmessage').html(mensaje)
-            }
-            });
+        if(ID_cama_seleccionada!=-1){
+             pkcama1 = ID_cama_seleccionada;
+             pkpaciente1 = $('#idpaciente').val();
+             $.ajax({
+                type: "POST",
+                url: {% url 'asignarcama' %},
+                data : {'pkcama': pkcama1,'pkpaciente': pkpaciente1, csrfmiddlewaretoken: '{{ csrf_token }}'},
+                success: function Result(mensaje) {
+                    console.log(mensaje)
+                    $('#resultmessage').html(mensaje)
+                }
+             });
+        }
+        else
+            alert("La cama seleccionada esta actualmente ocupada, seleccione otra por favor");
+            alert("En caso no haya camas disponibles, informe a su superior sobre el problema");
+
     }
     $( function() {
         obtenerDatosCama();
@@ -141,7 +147,12 @@
                             Dropped[PreviewKey]=0;
                           PreviewKey = i.toString();
                       }
+                      else{
+                          ID_cama_seleccionada = -1
                       }
+
+                    }
+
                   }
               }
               }

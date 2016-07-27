@@ -15,7 +15,7 @@
         <h5>Nro de Cama: </h5>
         <p id="p3">{{ atencion.NroCamaA.Nro_Cama }}</p>
         <h5>Paciente Atendido: </h5>
-        <p id="p4">{{ atencion.NroCamaA.Id_paciente.Nombre_P }}, {{ atencion.NroCamaA.Id_paciente.Apellido_P }}</p>
+        <p id="p4">{{ atencion.PacienteA.Nombre_P }}, {{ atencion.PacienteA.Apellido_P }}</p>
         <h5>Area de Atencion: </h5>
         <p id="p5">{{ atencion.NroCamaA.Area.Descripcion_Area }}</p>
         <h5>Personal que atendio: </h5>
@@ -23,13 +23,11 @@
         <h5>Usuario que registro atencion: </h5>
         <p id="p7">{{ atencion.Nombre_U.first_name }}, {{ atencion.Nombre_U.last_name}} </p>
         <h5>Total de veces editado: </h5>
-        <p id="p8">{{ atencion.NroEdiciones.TotalE }} </p>
-        <h5>Total de veces editado: </h5>
         <p id="p9">{{ Totalediciones }} </p>
         <h5>Usuarios que Editaron: </h5>
         <div id="users-edit"></div>
         {% for edicionU in EdicionesxUser %}
-        <p>{{ edicionU.idUsuarios.first_name }}, {{ edicionU.idUsuarios.last_name }}: {{ edicionU.TotalE }} Ediciones al registro</p>
+        <p>{{ edicionU.IdUsuarios.first_name }}, {{ edicionU.IdUsuarios.last_name }}: {{ edicionU.TotalE }} Ediciones al registro</p>
         {% endfor %}
         <h5>Fue editado por ultima vez: </h5>
         <p id="p11">{{ Last_Time }}</p>

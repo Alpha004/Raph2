@@ -1,4 +1,43 @@
 {% extends 'rapi/Layout.html' %}
 
 {% block principal %}
+    <div class="col-md-6">
+    <table border="solid" class="table table-striped">
+        <thead>
+            <tr>
+                <td>Cama Asignada</td>
+                <td>Nombre del Paciente</td>
+                <td>Dni del Paciente</td>
+                <td>Indicar Salida</td>
+            </tr>
+        </thead>
+        <tbody>
+        {% for camas_seleccionada in camas_seleccionadas %}
+            <tr>
+                <td>Cama Nro: {{ camas_seleccionada.Nro_Cama }}</td>
+                <td>{{ camas_seleccionada.Id_paciente.Apellido_P }},{{ camas_seleccionada.Id_paciente.Nombre_P }} </td>
+                <td>{{ camas_seleccionada.Id_paciente.Dni_P }} </td>
+                <td><button id="{{ camas_seleccionada.Id_paciente.pk }}" class="btn btn-success btn-lg" onclick="MarcarSalida(this)">MARCAR SALIDA</button></td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+    </div>
+{% endblock %}
+{% block js %}
+    <script>
+        function MarcarSalida(button){
+            paciente_salida = button.id;
+            $.ajax({
+                type: "POST",
+                url: {% url 'marcarsalida' %},
+                data: {'pkpaciente':paciente_salida,csrfmiddlewaretoken: '{{ csrf_token }}'},
+                success: function (message) {
+                    alert(message);
+                    button.setAttribute( 'disabled', 'disabled' );
+                }
+
+            })
+        }
+    </script>
 {% endblock %}

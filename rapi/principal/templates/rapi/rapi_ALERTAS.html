@@ -21,7 +21,7 @@
                         <tr id="{{ local_alerta.NroCamaA }}" >
                             <div class="btn-group" role="group" aria-label="...">
 
-                                <th> Cama Nro: {{ local_alerta.NroCamaA.Nro_Cama }} // {{ local_alerta.TiempoA }}</th>
+                                <th> {{ local_alerta.AlertaMensajeA }} <br> Cama Nro: {{ local_alerta.NroCamaA.Nro_Cama }} // {{ local_alerta.TiempoA }}</th>
                                 <th><center><button id="atendido" name="{{ local_alerta.id }}" type="button" class="btn btn-success" data-toggle="modal" data-target="#myModal" onclick="enviar_atencion(this,{{ local_alerta.id }})"><span class="glyphicon glyphicon-ok" aria-hidden="true"></span> Atendido</button>
                                     <button id="noatendido" name="{{ local_alerta.id }}" type="button" class="btn btn-danger" data-toggle="modal" data-target="#myModal2" onclick="enviar_atencion(this,{{ local_alerta.id }})"><span class="glyphicon glyphicon-remove" aria-hidden="true" ></span> No Atendido</button></center></th>
 {#                                {% empty %}#}
